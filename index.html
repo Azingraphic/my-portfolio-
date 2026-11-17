@@ -76,10 +76,19 @@
             position: absolute; inset: 0; width: 100%; height: 100%;
             border: 0;
         }
-        .thumbnail-frame { width: 100%; }
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            align-items: start;
+        }
+        .thumbnail-frame { width: 100%; min-width: 0; }
         .thumbnail-frame img {
             display: block; width: 100%; height: auto; max-width: 100%;
-            object-fit: contain;
+            object-fit: contain; border-radius: 10px;
+        }
+        @media (max-width: 600px) {
+            .thumbnail-grid { grid-template-columns: 1fr; gap: 16px; }
         }
         .card-content { padding: 18px 20px 20px; }
         .card-content h3 { margin: 0 0 8px; font-size: 1.08rem; color: #fff; }
@@ -149,6 +158,7 @@
 
         <section class="work-section" aria-labelledby="thumbnail-heading">
             <h2 class="section-title" id="thumbnail-heading">Thumbnail Design</h2>
+            <div class="thumbnail-grid">
             <article class="work-card">
                 <div class="thumbnail-frame">
                     <img src="https://raw.githubusercontent.com/Azingraphic/my-portfolio-/main/Thumbnail_1.png" alt="Clear Skin Thumbnail" loading="lazy">
@@ -164,8 +174,8 @@
                     <img src="https://raw.githubusercontent.com/Azingraphic/my-portfolio-/main/Thumbnail_2.png" alt="Fear of Writing Thumbnail" loading="lazy">
                 </div>
                 <div class="card-content">
-                    <h3>Fear of Writing Thumbnail</h3>
-                    <p>Creative concept design for a writing channel.</p>
+                    <h3>Edit Create Grow Thumbnail</h3>
+                    <p>Creative thumbnail design featuring the message “Edit Create Grow”.</p>
                 </div>
             </article>
 
