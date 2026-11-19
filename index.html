@@ -103,6 +103,21 @@
         .wide-video-frame iframe {
             position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
         }
+        .video-end-screen {
+            position:absolute; inset:0; z-index:5; display:none;
+            align-items:center; justify-content:center; flex-direction:column;
+            gap:14px; padding:20px; text-align:center;
+            background:radial-gradient(circle at 50% 35%, #29231a, #090909 72%);
+            border:1px solid rgba(245,166,35,.35);
+        }
+        .video-end-screen.is-visible { display:flex; }
+        .video-end-screen strong { color:#f5a623; font-size:clamp(1rem,3vw,1.35rem); letter-spacing:1px; }
+        .video-end-screen span { color:#ddd; font-size:.9rem; }
+        .video-replay {
+            border:1px solid #f5a623; border-radius:6px; padding:10px 18px;
+            background:#f5a623; color:#121212; font-weight:700; cursor:pointer;
+        }
+        .video-replay:hover { background:#fff; border-color:#fff; }
         @media (max-width: 600px) {
             .media-frame { padding: 22px 12px; }
             .phone-shell { width: min(278px, 78vw); }
@@ -242,13 +257,19 @@
                     <div class="phone-shell">
                       <div class="video-frame">
                         <iframe
-                            src="https://www.youtube.com/embed/zAhUIW_Ceh4"
+                            id="azin-short-video"
+                            src="https://www.youtube.com/embed/zAhUIW_Ceh4?enablejsapi=1&amp;rel=0&amp;playsinline=1&amp;modestbranding=1"
                             title="Short Form Video"
                             loading="lazy"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin"
                             allowfullscreen>
                         </iframe>
+                        <div class="video-end-screen" id="short-end-screen" aria-live="polite">
+                            <strong>AZIN GRAPHIC</strong>
+                            <span>Thanks for watching.</span>
+                            <button class="video-replay" type="button" data-replay="azin-short-video">Replay video</button>
+                        </div>
                       </div>
                     </div>
                 </div>
@@ -261,13 +282,19 @@
                 <div class="wide-media-frame">
                     <div class="wide-video-frame">
                         <iframe
-                            src="https://www.youtube.com/embed/fORiON8hwFM"
+                            id="azin-tesla-video"
+                            src="https://www.youtube.com/embed/fORiON8hwFM?enablejsapi=1&amp;rel=0&amp;playsinline=1&amp;modestbranding=1"
                             title="Tesla vs. Edison | The War of Currents"
                             loading="lazy"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin"
                             allowfullscreen>
                         </iframe>
+                        <div class="video-end-screen" id="tesla-end-screen" aria-live="polite">
+                            <strong>AZIN GRAPHIC</strong>
+                            <span>Thanks for watching.</span>
+                            <button class="video-replay" type="button" data-replay="azin-tesla-video">Replay video</button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-content">
@@ -408,7 +435,34 @@
         <p>&copy; 2024 Azin. All rights reserved.</p>
     </footer>
 
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
+const azinPlayers = {};
+function onYouTubeIframeAPIReady() {
+    ['azin-short-video', 'azin-tesla-video'].forEach((id) => {
+        const player = new YT.Player(id, {
+            events: {
+                onStateChange: (event) => {
+                    const screenId = id === 'azin-short-video' ? 'short-end-screen' : 'tesla-end-screen';
+                    const screen = document.getElementById(screenId);
+                    if (!screen) return;
+                    if (event.data === YT.PlayerState.ENDED) screen.classList.add('is-visible');
+                    if (event.data === YT.PlayerState.PLAYING) screen.classList.remove('is-visible');
+                }
+            }
+        });
+        azinPlayers[id] = player;
+    });
+}
+document.querySelectorAll('.video-replay').forEach((button) => {
+    button.addEventListener('click', () => {
+        const player = azinPlayers[button.dataset.replay];
+        if (player) {
+            player.seekTo(0);
+            player.playVideo();
+        }
+    });
+});
 document.querySelectorAll('.thumbnail-toggle').forEach((button) => {
     button.addEventListener('click', () => {
         const panel = document.getElementById(button.getAttribute('aria-controls'));
