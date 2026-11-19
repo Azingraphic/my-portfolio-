@@ -39,6 +39,33 @@
             gap: 14px; flex-wrap: wrap;
         }
         .links { margin-bottom: 8px; }
+        .contact-actions {
+            display:flex; justify-content:center; align-items:center; gap:12px;
+            flex-wrap:wrap; margin:16px auto 0;
+        }
+        .contact-btn { min-width:175px; font:inherit; cursor:pointer; }
+        .contact-form-panel {
+            display:none; width:min(100%,520px); margin:18px auto 0; padding:22px;
+            text-align:left; background:rgba(255,255,255,.055);
+            border:1px solid rgba(245,166,35,.32); border-radius:14px;
+            box-shadow:0 12px 30px rgba(0,0,0,.25);
+        }
+        .contact-form-panel.is-open { display:block; animation:contact-in .28s ease both; }
+        .contact-form-panel h3 { margin:0 0 7px; color:#f5a623; font-size:1.15rem; }
+        .contact-form-panel p { margin:0 0 18px; color:#aaa; font-size:.9rem; line-height:1.5; }
+        .contact-form-panel form { display:grid; gap:8px; }
+        .contact-form-panel label { color:#ddd; font-size:.85rem; font-weight:600; margin-top:5px; }
+        .contact-form-panel input, .contact-form-panel textarea {
+            width:100%; padding:12px 13px; border:1px solid #454545; border-radius:7px;
+            background:#191919; color:#fff; font:inherit; font-size:.95rem;
+        }
+        .contact-form-panel input:focus, .contact-form-panel textarea:focus {
+            outline:2px solid rgba(245,166,35,.55); border-color:#f5a623;
+        }
+        .contact-form-panel textarea { resize:vertical; min-height:120px; }
+        .form-submit { border:0; margin-top:10px; cursor:pointer; font:inherit; }
+        .form-honey { position:absolute!important; left:-10000px!important; opacity:0!important; }
+        @keyframes contact-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             padding: 12px 22px; background: #f5a623; color: #121212;
@@ -247,6 +274,32 @@
                 <i class="fa-solid fa-globe"></i> My Website
             </a>
         </div>
+        <div class="contact-actions" aria-label="Contact options">
+            <a href="mailto:azingraphic60@gmail.com" class="btn contact-btn">
+                <i class="fa-solid fa-envelope"></i> Email Me
+            </a>
+            <button type="button" class="btn btn-outline contact-btn" id="open-contact-form" aria-expanded="false" aria-controls="contact-form-panel">
+                <i class="fa-solid fa-paper-plane"></i> Send a Message
+            </button>
+        </div>
+        <section class="contact-form-panel" id="contact-form-panel" aria-hidden="true">
+            <h3>Let's work together</h3>
+            <p>Tell me a little about your project. I'll get back to you by email.</p>
+            <form action="https://formsubmit.co/azingraphic60@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="New portfolio enquiry — Azin Graphic">
+                <input type="hidden" name="_template" value="table">
+                <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <label for="contact-name">Your name</label>
+                <input id="contact-name" type="text" name="name" placeholder="Your name" required>
+                <label for="contact-email">Your email</label>
+                <input id="contact-email" type="email" name="email" placeholder="you@example.com" required>
+                <label for="contact-subject">Subject</label>
+                <input id="contact-subject" type="text" name="subject" placeholder="What would you like to discuss?">
+                <label for="contact-message">Message</label>
+                <textarea id="contact-message" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+                <button class="btn form-submit" type="submit"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+            </form>
+        </section>
     </header>
 
     <main>
@@ -463,6 +516,17 @@ document.querySelectorAll('.video-replay').forEach((button) => {
         }
     });
 });
+const contactButton = document.getElementById('open-contact-form');
+const contactPanel = document.getElementById('contact-form-panel');
+if (contactButton && contactPanel) {
+    contactButton.addEventListener('click', () => {
+        const willOpen = contactButton.getAttribute('aria-expanded') !== 'true';
+        contactButton.setAttribute('aria-expanded', String(willOpen));
+        contactPanel.classList.toggle('is-open', willOpen);
+        contactPanel.setAttribute('aria-hidden', String(!willOpen));
+        if (willOpen) contactPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+}
 document.querySelectorAll('.thumbnail-toggle').forEach((button) => {
     button.addEventListener('click', () => {
         const panel = document.getElementById(button.getAttribute('aria-controls'));
